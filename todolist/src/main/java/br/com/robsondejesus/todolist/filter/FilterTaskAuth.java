@@ -1,6 +1,7 @@
 package br.com.robsondejesus.todolist.filter;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,12 +20,20 @@ public class FilterTaskAuth extends OncePerRequestFilter {
 
         // Pega a aunteticação (ususario e senha)
         var authorization = request.getHeader("Authorization");
-        System.out.println("Authorization " + authorization);
 
-        authorization.substring("Basic".length()).trim();
+        var authEncoded = authorization.substring("Basic".length()).trim();
 
-        // Validar o usuario
-        // valida a senha
+        byte[] authDecode = Base64.getDecoder().decode(authEncoded);
+
+        var authString = new String(authDecode);
+        System.out.println("Authorization");
+        System.out.println(authString);
+
+        String[] credentials = authString.split(":");
+        String username = credentials[0];
+        String password = credentials[1];
+        System.out.println(username);
+        System.out.println(password);
 
         filterChain.doFilter(request, response);
     }
